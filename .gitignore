@@ -1,4 +1,5 @@
 **/nginxConfigs
+notes.md
 #Lein ignores
 /target
 /classes
