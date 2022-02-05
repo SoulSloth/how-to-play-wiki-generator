@@ -15,7 +15,7 @@
 (defn get-assets
   "Import assets into optimus"
   []
-  (assets/load-assets "public" [#".*"]))
+  (assets/load-assets "optimusStayInYourLane/public" [#".*"]))
 
 (defn layout-page
   "Template a body into a basic page"
@@ -46,14 +46,14 @@
 
 (defn get-raw-pages
   "Return a map of routes to page contents for resources, Throws a fit if we have path conflicts"
-  []
+  [resource-dir]
   (stasis/merge-page-sources
    {:public
-    (stasis/slurp-directory "resources/public" #".*\.(html|css|js)$")
+    (stasis/slurp-directory (str resource-dir "/public") #".*\.(html|css|js)$")
     :partials
-    (partial-pages (stasis/slurp-directory "resources/partials" #".*\.html$"))
+    (partial-pages (stasis/slurp-directory (str resource-dir "/partials") #".*\.html$"))
     :markdown
-    (markdown-pages (stasis/slurp-directory "resources/markdown" #"\.md$"))}))
+    (markdown-pages (stasis/slurp-directory (str resource-dir "/markdown") #"\.md$"))}))
 
 (defn prepare-page
   "Do any prepossessing a page needs here"
@@ -69,28 +69,18 @@
 
 (defn get-pages
   "Return a map of paths->functions returning pages. Lazy pages"
-  []
-  (prepare-pages (get-raw-pages)))
+  [resource-dir]
+  (prepare-pages (get-raw-pages resource-dir)))
 
 ;; Server handler we pass to RING
 (def app
-  (optimus/wrap
-   (stasis/serve-pages get-pages)
-   get-assets
-   ;;Perform all optimizations
-   optimizations/all
-   ;;Optimus reads assets from disk on all requests
-   ;;TODO: What happens when we export a static site?
-   serve-live-assets))
+  get-pages
+   )
 
-;;May have to give up on a jar deployment due to: https://github.com/magnars/optimus/issues/39
-(defn export [export-dir]
-  (let [assets (optimizations/all (get-assets) {})]
-    (stasis/empty-directory! export-dir)
-    (optimus.export/save-assets assets export-dir)
-    (stasis/export-pages (get-pages) export-dir {:optimus-assets assets})))
+(defn export [resource-dir export-dir]
+    (stasis/export-pages (get-pages resource-dir) export-dir))
 
 ;;TODO: jar deployment? May not be needed if we never deploy as a server
 (defn -main
   [& args]
-  (export (first args)))
+  (export (first args) (second args)))
