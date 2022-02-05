@@ -1,22 +1,29 @@
-# how-to-play-wiki
+# How to play wiki Site Generator
 
-A Clojure library designed to ... well, that part is up to you.
+Static site generator for a simple and fast gaming wiki.
 
 ## Usage
 
-FIXME
+### Development
 
-## License
+For development you can launch the ring server by running the following in the project directory:
 
-Copyright © 2022 FIXME
+```shell
+lein ring server
+```
 
-This program and the accompanying materials are made available under the
-terms of the Eclipse Public License 2.0 which is available at
-http://www.eclipse.org/legal/epl-2.0.
+This will launch a server which will serve the site on localhost from the `resources` directory. Changes you make to the code and pages will be reflected when you refresh the site.
 
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
+### Artifact
+
+The site can be exported one of two ways:
+
+```shell
+#Using Lein task
+lein build-site "input-dir" "output-dir"
+
+#As a standalone uberjar
+lein uberjar
+
+java -jar ./target/uberjar/{your standalone artifact}.jar "input-dir" "output-dir"
+```
