@@ -1,47 +1,30 @@
-name: MasterCI
+name: Build and Deploy Uberjar
+
+# On pushes to master
 on:
   push:
-    branches: [ master ]
-jobs:
-  build:
+    branches:
+      - master
+
+  # Let me run from actions
+  workflow_dispatch:
+
+# jobs:
+  build-uberjar:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: echo Hello, world!
-    - name: Run a multi-line script
-      run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+      - name: Install Java Runtime
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '8'
 
+      - name: Install Lein
+        uses: DeLaGuardo/setup-clojure@3.7
+        with:
+          lein: latest
 
-# name: Build and Deploy Uberjar
-
-# # On pushes to master
-# on:
-#   push:
-#     branches:
-#       - master
-
-#   # Let me run from actions
-#   workflow_dispatch:
-
-# # jobs:
-#   build-uberjar:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Install Java Runtime
-#         uses: actions/setup-java@v2
-#         with:
-#           distribution: 'zulu'
-#           java-version: '8'
-
-#       - name: Install Lein
-#         uses: DeLaGuardo/setup-clojure@3.7
-#         with:
-#           lein: latest
-
-#       - name: Build Uberjar
-#         run: lein uberjar
-#         shell: bash
+      - name: Build Uberjar
+        run: lein uberjar
+        shell: bash
