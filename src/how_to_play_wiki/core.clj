@@ -9,7 +9,8 @@
             [optimus.assets :as assets]
             [optimus.optimizations :as optimizations]
             [optimus.prime :as optimus]
-            [optimus.strategies :refer [serve-live-assets]]))
+            [optimus.strategies :refer [serve-live-assets]])
+  (:gen-class))
 
 (defn get-assets
   "Import assets into optimus"
@@ -82,10 +83,14 @@
    ;;TODO: What happens when we export a static site?
    serve-live-assets))
 
-(def export-dir "dist")
-
-(defn export []
+;;May have to give up on a jar deployment due to: https://github.com/magnars/optimus/issues/39
+(defn export [export-dir]
   (let [assets (optimizations/all (get-assets) {})]
     (stasis/empty-directory! export-dir)
     (optimus.export/save-assets assets export-dir)
     (stasis/export-pages (get-pages) export-dir {:optimus-assets assets})))
+
+;;TODO: jar deployment? May not be needed if we never deploy as a server
+(defn -main
+  [& args]
+  (export (first args)))
