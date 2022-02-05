@@ -15,18 +15,18 @@ jobs:
   build-uberjar:
     runs-on: ubuntu-latest
 
-  steps:
-    - name: Install Java Runtime
-      uses: actions/setup-java@v2
-      with:
-        distribution: 'zulu'
-        java-version: '8'
+    steps:
+      - name: Install Java Runtime
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '8'
 
-    - name: Install Lein
-      uses: DeLaGuardo/setup-clojure@3.7
-      with:
-        lein: latest
+      - name: Install Lein
+        uses: DeLaGuardo/setup-clojure@3.7
+        with:
+          lein: latest
 
-    - name: Build Uberjar
-      run: lein uberjar
-      shell: bash
+      - name: Build Uberjar
+        run: lein uberjar
+        shell: bash
