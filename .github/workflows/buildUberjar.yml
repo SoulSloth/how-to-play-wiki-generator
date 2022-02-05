@@ -9,22 +9,34 @@ on:
   # Let me run from actions
   workflow_dispatch:
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build-uberjar:
+  # This workflow contains a single job called "build"
+  update:
+    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Install Java Runtime
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'zulu'
-          java-version: '8'
+    - name: Updating website.
+      run: echo "foo"
 
-      - name: Install Lein
-        uses: DeLaGuardo/setup-clojure@3.7
-        with:
-          lein: latest
+# jobs:
+#   build-uberjar:
+#     runs-on: ubuntu-latest
 
-      - name: Build Uberjar
-        run: lein uberjar
-        shell: bash
+#     steps:
+#       - name: Install Java Runtime
+#         uses: actions/setup-java@v2
+#         with:
+#           distribution: 'zulu'
+#           java-version: '8'
+
+#       - name: Install Lein
+#         uses: DeLaGuardo/setup-clojure@3.7
+#         with:
+#           lein: latest
+
+#       - name: Build Uberjar
+#         run: lein uberjar
+#         shell: bash
