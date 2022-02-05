@@ -1,21 +1,10 @@
 (ns how-to-play-wiki.core
   (:require [stasis.core :as stasis]
-            [optimus.link :as link]
             [hiccup.page :refer [html5]]
             [clojure.java.io :as io]
             [markdown.core :as md]
-            [clojure.string :as str]
-            [optimus.export]
-            [optimus.assets :as assets]
-            [optimus.optimizations :as optimizations]
-            [optimus.prime :as optimus]
-            [optimus.strategies :refer [serve-live-assets]])
+            [clojure.string :as str])
   (:gen-class))
-
-(defn get-assets
-  "Import assets into optimus"
-  []
-  (assets/load-assets "optimusStayInYourLane/public" [#".*"]))
 
 (defn layout-page
   "Template a body into a basic page"
@@ -26,7 +15,7 @@
     [:meta {:name "viewport"
             :content "width=device-width, initial-scale=1.0"}]
     [:title "Tech blog"]
-    [:link {:rel "stylesheet" :href (link/file-path request "/styles/styles.css")}]]
+    [:link {:rel "stylesheet" :href  "/styles/styles.css"}]]
    [:body
     [:div.logo "howtoplaywiki.no"]
     [:div.body page]]))
@@ -72,15 +61,17 @@
   [resource-dir]
   (prepare-pages (get-raw-pages resource-dir)))
 
-;; Server handler we pass to RING
+;;Ring handler for development server
+;;TODO: Make this a development dep instead
 (def app
-  get-pages
-   )
+  (stasis/serve-pages (get-pages "resources")))
 
-(defn export [resource-dir export-dir]
+(defn export
+  "Export the static site to some directory"
+  [resource-dir export-dir]
     (stasis/export-pages (get-pages resource-dir) export-dir))
 
-;;TODO: jar deployment? May not be needed if we never deploy as a server
 (defn -main
-  [& args]
-  (export (first args) (second args)))
+  "Function for our uberjar to run"
+  [resource-dir export-dir & args]
+  (export resource-dir export-dir))
