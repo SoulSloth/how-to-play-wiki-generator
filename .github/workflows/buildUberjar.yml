@@ -26,5 +26,9 @@ jobs:
           lein: latest
 
       - name: Build-Uberjar
+        run: ls
+        shell: bash
+
+      - name: Build-Uberjar
         run: lein uberjar
         shell: bash
