@@ -9,8 +9,8 @@ on:
   # Let me run from actions
   workflow_dispatch:
 
-# jobs:
-  update:
+jobs:
+  build-uber-jar:
     runs-on: ubuntu-latest
 
     steps:
