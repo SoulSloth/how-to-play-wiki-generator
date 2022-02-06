@@ -34,10 +34,11 @@ jobs:
         shell: bash
 
       - name: Publish-to-website
+        working-dir: ./target/uberjar
         uses: appleboy/scp-action@master
         with:
           host: howtoplay.wiki
-          source: "./target/uberjar/how-to-play-wiki-0.1.0-SNAPSHOT-standalone.jar"
+          source: "how-to-play-wiki-0.1.0-SNAPSHOT-standalone.jar"
           target: ~/
           username: root 
           key: ${{ secrets.ssh }}
