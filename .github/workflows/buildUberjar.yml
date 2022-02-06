@@ -32,7 +32,7 @@ jobs:
       - name: Build-Uberjar
         run: |
           lein uberjar
-          cp ./target/uberjar/* ./
+          cp -r ./target/uberjar/* ./
         shell: bash
     
 
