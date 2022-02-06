@@ -38,5 +38,6 @@ jobs:
           echo -e ${{ secrets.ssh }} > ssh_id
           chmod 600 ssh_id
           scp -P ${{ secrets.port }} -o StrictHostKeyChecking=no -i ssh_id ./target/uberjar/how-to-play-wiki-0.1.0-SNAPSHOT-standalone.jar root@howtoplay.wiki:~/
+        shell: bash
 
 
