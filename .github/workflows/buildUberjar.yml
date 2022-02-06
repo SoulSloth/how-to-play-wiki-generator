@@ -33,10 +33,6 @@ jobs:
         run: lein uberjar
         shell: bash
 
-  copy-uber-jar-to-remote:
-    runs-on: ubuntu-latest
-    working-directory: ./target/uberjar
-    steps:
       - name: Publish-to-website
         uses: appleboy/scp-action@master
         with:
@@ -47,3 +43,4 @@ jobs:
           key: ${{ secrets.ssh }}
           passphrase: ${{ secrets.ssh_pass }}
           port: ${{ secrets.ssh_port }}
+          working-directory: ./target/uberjar
