@@ -39,7 +39,7 @@ jobs:
           host: howtoplay.wiki
           source: "./target/uberjar/how-to-play-wiki-0.1.0-SNAPSHOT-standalone.jar"
           target: ~/
+          username: root 
           key: ${{ secrets.ssh }}
           passphrase: ${{ secrets.ssh_pass }}
           port: ${{ secrets.ssh_port }}
-          user: root 
