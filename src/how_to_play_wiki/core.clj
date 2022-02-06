@@ -11,7 +11,9 @@
             [optimus.strategies :refer [serve-live-assets]])
   (:gen-class))
 
-(defn get-assets []
+(defn get-assets
+  "Load all assets in public"
+  []
   (assets/load-assets "public" [#".*"]))
 
 (defn layout-page
@@ -23,7 +25,7 @@
     [:meta {:name "viewport"
             :content "width=device-width, initial-scale=1.0"}]
     [:title "How to Play Wiki"]
-    [:link {:rel "stylesheet" :href (link/file-path request "/styles/main.css")}]]
+    [:link {:rel "stylesheet" :href (link/file-path request "/styles/styles.css")}]]
    [:body
     [:div.body page]]))
 
@@ -47,9 +49,8 @@
    [:div
     [:h1 title]
     [:aside.profile
-     [:div
       [:h2 title]
-      [:img {:src portrait}]]]
+      [:img {:src portrait}]]
     ;;TODO: Markdown goes here
     [:div description]
     [:h1 "Location"]

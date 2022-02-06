@@ -3,3 +3,12 @@ body {
     line-height: 1.5;
     margin: 0 10px;
 }
+
+.profile {
+    float: right;
+    width: 30em;
+}
+
+.profile img {
+    width: inherit;
+}
