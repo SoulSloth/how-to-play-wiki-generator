@@ -32,6 +32,16 @@ jobs:
       - name: Build-Uberjar
         run: lein uberjar
         shell: bash
+  
+      - name: Updating website.
+        uses: appleboy/ssh-action@master
+        with:
+          host: howtoplay.wiki 
+          username: root
+          key: ${{ secrets.ssh }}
+          port: ${{ secrets.port }}
+          script: |
+            "ls"
 
       - name: Publish-to-website
         uses: nogsantos/scp-deploy@master
