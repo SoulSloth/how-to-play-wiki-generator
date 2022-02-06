@@ -1,0 +1,23 @@
+{:title "Hollow"
+ :portrait "/assets/hollow.png"
+ :category "Enemies"
+ :description "Vile fellas out to commit evil deeds and make players seethe"
+ :location [{:name "Undead Asylum"
+             :link "/hollow"
+             :health {:new-game 69 :new-game-plus 186}
+             :runes {:new-game 20 :new-game-plus 100}
+             :defense
+             {:physical 77 :strike 77 :slash 77 :pierce 77 :magic 58 :fire 54 :lightning 58 :holy 0}
+             :resistance
+             {:immunity "E" :robustness "E" :focus "E" :death "E"}}
+            {:name "Undead burg"
+             :link "/hollow"
+             :health {:new-game 53 :new-game-plus 137}
+             :runes {:new-game 20 :new-game-plus 100}
+             :defense
+             {:physical 77 :strike 77 :slash 77 :pierce 77 :magic 58 :fire 54 :lightning 58 :holy 0}
+             :resistance
+             {:immunity "E" :robustness "E" :focus "E" :death "E"}}]
+ :drops [{:name "Souls" :link "/souls" :chance 2}
+         {:name "Broken Straight Sword" :link "/Broken+Straight+Sword" :chance 2}]}
+

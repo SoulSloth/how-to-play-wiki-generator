@@ -14,10 +14,9 @@
     [:meta {:charset "utf-8"}]
     [:meta {:name "viewport"
             :content "width=device-width, initial-scale=1.0"}]
-    [:title "Tech blog"]
+    [:title "How to Play Wiki"]
     [:link {:rel "stylesheet" :href  "/styles/styles.css"}]]
    [:body
-    [:div.logo "howtoplaywiki.no"]
     [:div.body page]]))
 
 (defn partial-pages
@@ -33,6 +32,32 @@
   (zipmap (map #(str/replace % #"\.md$" "/") (keys pages))
           (map #(fn [req] (layout-page req (md/md-to-html-string %))) (vals pages))))
 
+(defn edn-layout
+  "Layout an edn file"
+  [{:keys [title category description location drops portrait]}]
+  (html5
+   [:div
+    [:h1 title]
+    [:aside.profile
+     [:div
+      [:h2 title]
+      [:img {:src portrait}]]]
+    ;;TODO: Markdown goes here
+    [:div description]
+    [:h1 "Location"]
+    [:div
+     [:ul (for [{:keys [name link]} location]
+            [:li [:a {:href link} name]])]]
+    [:h1 "Drops"]
+    [:ul (for [{:keys [name link chance]} drops]
+           [:li [:a {:href link} (str name " %" chance)]])]]))
+
+(defn edn-pages
+  "{:path :edn-file} -> {:path :f(request)-> html-file}"
+  [pages]
+  (zipmap (map #(str/replace % #"\.edn$" "/") (keys pages))
+          (map #(fn [req] (layout-page req (edn-layout (read-string %)))) (vals pages))))
+
 (defn get-raw-pages
   "Return a map of routes to page contents for resources, Throws a fit if we have path conflicts"
   [resource-dir]
@@ -42,7 +67,9 @@
     :partials
     (partial-pages (stasis/slurp-directory (str resource-dir "/partials") #".*\.html$"))
     :markdown
-    (markdown-pages (stasis/slurp-directory (str resource-dir "/markdown") #"\.md$"))}))
+    (markdown-pages (stasis/slurp-directory (str resource-dir "/markdown") #"\.md$"))
+    :edn
+    (edn-pages (stasis/slurp-directory (str resource-dir "/edn") #".*\.edn$"))}))
 
 (defn prepare-page
   "Do any prepossessing a page needs here"
@@ -69,7 +96,7 @@
 (defn export
   "Export the static site to some directory"
   [resource-dir export-dir]
-    (stasis/export-pages (get-pages resource-dir) export-dir))
+  (stasis/export-pages (get-raw-pages resource-dir) export-dir))
 
 (defn -main
   "Function for our uberjar to run"
