@@ -14,17 +14,17 @@ on:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install Java Runtime
+      - name: Install-Java-Runtime
         uses: actions/setup-java@v2
         with:
           distribution: 'zulu'
           java-version: '8'
 
-      - name: Install Lein
+      - name: Install-Lein
         uses: DeLaGuardo/setup-clojure@3.7
         with:
           lein: latest
 
-      - name: Build Uberjar
+      - name: Build-Uberjar
         run: lein uberjar
         shell: bash
