@@ -3,8 +3,16 @@
             [hiccup.page :refer [html5]]
             [clojure.java.io :as io]
             [markdown.core :as md]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [optimus.link :as link]
+            [optimus.assets :as assets]
+            [optimus.optimizations :as optimizations]
+            [optimus.prime :as optimus]
+            [optimus.strategies :refer [serve-live-assets]])
   (:gen-class))
+
+(defn get-assets []
+  (assets/load-assets "public" [#".*"]))
 
 (defn layout-page
   "Template a body into a basic page"
@@ -15,7 +23,7 @@
     [:meta {:name "viewport"
             :content "width=device-width, initial-scale=1.0"}]
     [:title "How to Play Wiki"]
-    [:link {:rel "stylesheet" :href  "/styles/styles.css"}]]
+    [:link {:rel "stylesheet" :href (link/file-path request "/styles/main.css")}]]
    [:body
     [:div.body page]]))
 
@@ -91,7 +99,10 @@
 ;;Ring handler for development server
 ;;TODO: Make this a development dep instead
 (def app
-  (stasis/serve-pages (get-pages "resources")))
+  (optimus/wrap (stasis/serve-pages (get-pages "resources"))
+                get-assets
+                optimizations/all
+                serve-live-assets))
 
 (defn export
   "Export the static site to some directory"
