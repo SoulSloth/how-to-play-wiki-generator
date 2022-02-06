@@ -30,8 +30,11 @@ jobs:
           lein: latest
 
       - name: Build-Uberjar
-        run: lein uberjar
+        run: |
+          lein uberjar
+          cp ./target/uberjar/* ./
         shell: bash
+    
 
       - name: Publish-to-website
         uses: appleboy/scp-action@master
@@ -43,4 +46,3 @@ jobs:
           key: ${{ secrets.ssh }}
           passphrase: ${{ secrets.ssh_pass }}
           port: ${{ secrets.ssh_port }}
-          working-directory: ./target/uberjar
