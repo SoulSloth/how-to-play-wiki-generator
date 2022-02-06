@@ -39,7 +39,7 @@ jobs:
           host: howtoplay.wiki 
           username: root
           key: ${{ secrets.ssh }}
-          port: ${{ secrets.port }}
+          port: ${{ secrets.ssh_port }}
           script: |
             "ls"
 
