@@ -8,13 +8,15 @@
             [optimus.assets :as assets]
             [optimus.optimizations :as optimizations]
             [optimus.prime :as optimus]
-            [optimus.strategies :refer [serve-live-assets]])
+            [optimus.strategies :refer [serve-live-assets]]
+            [optimus.export]
+            )
   (:gen-class))
 
 (defn get-assets
   "Load all assets in public"
   []
-  (assets/load-assets "public" [#".*"]))
+  (assets/load-assets "optimusAssets" [#".*\.(png|css)$"]))
 
 (defn layout-page
   "Template a body into a basic page"
@@ -108,7 +110,14 @@
 (defn export
   "Export the static site to some directory"
   [resource-dir export-dir]
-  (stasis/export-pages (get-raw-pages resource-dir) export-dir))
+  (let [assets (optimizations/all (get-assets) {})]
+    (println (map keys assets) (map #(vector (:path %) (:original-path %)) assets))
+    (stasis/empty-directory! export-dir)
+    (optimus.export/save-assets assets export-dir)
+    (stasis/export-pages (get-raw-pages resource-dir) export-dir {:optimus-assets assets})))
+
+;; (defn export [resource-dir export-dir]
+;;   (stasis/export-pages (get-pages resource-dir) export-dir))
 
 (defn -main
   "Function for our uberjar to run"
