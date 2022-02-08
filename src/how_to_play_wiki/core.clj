@@ -31,19 +31,6 @@
    [:body.page
     [:div.body page]]))
 
-(defn partial-pages
-  "Transform a map of partials into a map full html pages"
-  [pages]
-  (zipmap (keys pages)
-          (map #(fn [req] (layout-page req %)) (vals pages))))
-
-(defn markdown-pages
-  "Turn a map of markdown pages into a map of html pages"
-  [pages]
-  ;;Pages must end in a file extension or slash
-  (zipmap (map #(str/replace % #"\.md$" "/") (keys pages))
-          (map #(fn [req] (layout-page req (md/md-to-html-string %))) (vals pages))))
-
 (defn edn-layout
   "Layout an edn file"
   [page]
@@ -52,20 +39,19 @@
 (defn edn-pages
   "{:path :edn-file} -> {:path :f(request)-> html-file}"
   [pages]
-  (zipmap (map #(str/replace % #"\.edn$" "/") (keys pages))
+  (zipmap (map
+           #(-> %
+                (str/replace #"\.edn$" "/")
+                ;;TODO: dirty hack to make index.edn the home page and not /index/. Remove.
+                (str/replace #"index/" ""))
+           (keys pages))
           (map #(fn [req] (layout-page req (edn-layout (read-string %)))) (vals pages))))
 
 (defn get-raw-pages
-  "Return a map of routes to page contents for resources, Throws a fit if we have path conflicts"
+  "Returns a map of {:routes f(raw-file)-> :prepared-page}"
   [resource-dir]
   (stasis/merge-page-sources
-   {:public
-    (stasis/slurp-directory (str resource-dir "/public") #".*\.(html|css|js)$")
-    :partials
-    (partial-pages (stasis/slurp-directory (str resource-dir "/partials") #".*\.html$"))
-    :markdown
-    (markdown-pages (stasis/slurp-directory (str resource-dir "/markdown") #"\.md$"))
-    :edn
+   {:edn
     (edn-pages (stasis/slurp-directory (str resource-dir "/edn") #".*\.edn$"))}))
 
 (defn prepare-page
@@ -75,7 +61,7 @@
   (if (string? page) page (page req)))
 
 (defn prepare-pages
-  "Turns our raw pages into functions"
+  "{:route :page} -> {:route :f(req) -> page}"
   [pages]
   (zipmap (keys pages)
           (map #(partial prepare-page %) (vals pages))))
@@ -88,7 +74,7 @@
 ;;Ring handler for development server
 ;;TODO: Make this a development dep instead
 (def app
-  (optimus/wrap (stasis/serve-pages (get-pages "resources"))
+  (optimus/wrap (stasis/serve-pages (get-pages "site-content"))
                 get-assets
                 optimizations/all
                 serve-live-assets))
