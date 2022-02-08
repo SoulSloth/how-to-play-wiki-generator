@@ -10,7 +10,7 @@
             [optimus.prime :as optimus]
             [optimus.strategies :refer [serve-live-assets]]
             [optimus.export]
-            )
+            [how-to-play-wiki.pages :as pages])
   (:gen-class))
 
 (defn get-assets
@@ -28,7 +28,7 @@
             :content "width=device-width, initial-scale=1.0"}]
     [:title "How to Play Wiki"]
     [:link {:rel "stylesheet" :href (link/file-path request "/styles/styles.css")}]]
-   [:body
+   [:body.page
     [:div.body page]]))
 
 (defn partial-pages
@@ -46,22 +46,8 @@
 
 (defn edn-layout
   "Layout an edn file"
-  [{:keys [title category description location drops portrait]}]
-  (html5
-   [:div
-    [:h1 title]
-    [:aside.profile
-      [:h2 title]
-      [:img {:src portrait}]]
-    ;;TODO: Markdown goes here
-    [:div description]
-    [:h1 "Location"]
-    [:div
-     [:ul (for [{:keys [name link]} location]
-            [:li [:a {:href link} name]])]]
-    [:h1 "Drops"]
-    [:ul (for [{:keys [name link chance]} drops]
-           [:li [:a {:href link} (str name " %" chance)]])]]))
+  [page]
+  (pages/enemy-page page))
 
 (defn edn-pages
   "{:path :edn-file} -> {:path :f(request)-> html-file}"
