@@ -1,3 +1,46 @@
+.siteTitle {
+    text-decoration: none;
+    color: var(--textcolor);
+}
+
+.siteTitle:hover {
+    text-decoration: underline;
+    color: var(--textcolor);
+}
+
+nav {
+    margin: auto;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--textcolor);
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+nav li {
+    background: var(--altbg);
+    border-radius:10px;
+    padding: 0.5em;
+    font-variant: small-caps;
+    text-decoration: none;
+    display: inline-block;
+    list-style:none;
+}
+
+nav li:hover {
+    list-style-type:disc;
+	  background: gold;
+	  color: black;
+	  box-shadow: 2px 2px orange;
+}
+
 .page {
     background: var(--bg);
     color: var(--textcolor);

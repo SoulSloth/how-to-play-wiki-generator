@@ -29,6 +29,15 @@
     [:title "How to Play Wiki"]
     [:link {:rel "stylesheet" :href (link/file-path request "/styles/styles.css")}]]
    [:body.page
+    [:a.siteTitle {:href "/"} [:h1 "Elden Ring Wiki"]]
+    ;;TODO: Generate this post re-catagorization
+    [:nav
+     [:ul
+      [:a {:href "/weapons"} [:li "Weapons"]]
+      [:a {:href "/locations"} [:li "Locations"]]
+      [:a {:href "/enemies"} [:li "Enemies"]]
+      [:a {:href "/items"} [:li "Items"]]
+      [:a {:href "/about"} [:li "About"]]]]
     [:div.body page]]))
 
 (defn edn-layout
@@ -37,8 +46,9 @@
   ;;what?
   (println category page)
   (case category
+    :about (pages/about-page page)
     :enemies (pages/enemy-page page)
-    :home(pages/home-page page)
+    :home (pages/home-page page)
     :directory (pages/directory-page page pages)))
 
 (defn edn-pages
