@@ -12,8 +12,6 @@
    [:div
     [:h2 "How to Play Wiki"]]))
 
-
-
 (defn directory-page
   "List of items in a category"
   [{:keys [item-category blurb]} pages]
@@ -25,7 +23,7 @@
    [:ul
     (for [page
           ;;Grab all the pages in the enemy category
-          (filter #(re-find #":category :enemies" (second %)) pages)]
+          (filter #(re-find (re-pattern (str ":category " item-category )) (second %)) pages)]
       (let [{title :title category :category} (read-string (second page))]
         [:li [:a {:href (str/replace (first page) #"\.edn$" "/")} title]]))]])
 
@@ -77,6 +75,22 @@
     [:h2 "Drops"]
     [:ul (for [{:keys [name link chance]} drops]
            [:li [:a {:href link} (str name " %" chance)]])]]))
+
+(defn location-page
+  "Location Page"
+  [{:keys [title description enemies]}]
+  (html5 [:div
+          [:h1 title]
+          [:hr]
+          [:p description]]))
+
+(defn weapon-page
+  "Weapon Page"
+  [{:keys [title description]}]
+  (html5 [:div
+          [:h1 title]
+          [:hr]
+          [:p description]]))
 
 (defn about-page
   "About page"
