@@ -5,6 +5,29 @@
             [markdown.core :as md]
             [clojure.string :as str]))
 
+(defn home-page
+  "Home page"
+  [page]
+  (html5
+   [:div
+    [:h1 "Elden Ring Wiki"]
+    [:h2 "How to Play Wiki"]]))
+
+(defn directory-page
+  "List of items in a category"
+  [{:keys [item-category blurb]} pages]
+  [:div
+   [:h1 (str/capitalize (str/replace (str item-category) #":" ""))]
+   [:hr]
+   [:p blurb]
+   [:hr]
+   [:ul
+    (for [page
+          ;;Grab all the pages in the enemy category
+          (filter #(re-find #":category :enemies" (second %)) pages)]
+      (let [{title :title category :category} (read-string (second page))]
+        [:li [:a {:href (str/replace (first page) #"\.edn$" "/") } title]]))]])
+
 (defn enemy-page
   "layout an enemy page"
   [{:keys [title category description location drops portrait]}]

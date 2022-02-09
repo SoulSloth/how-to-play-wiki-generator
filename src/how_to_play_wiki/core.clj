@@ -33,8 +33,13 @@
 
 (defn edn-layout
   "Layout an edn file"
-  [page]
-  (pages/enemy-page page))
+  [{category :category :as page} pages]
+  ;;what?
+  (println category page)
+  (case category
+    :enemies (pages/enemy-page page)
+    :home(pages/home-page page)
+    :directory (pages/directory-page page pages)))
 
 (defn edn-pages
   "{:path :edn-file} -> {:path :f(request)-> html-file}"
@@ -42,10 +47,11 @@
   (zipmap (map
            #(-> %
                 (str/replace #"\.edn$" "/")
-                ;;TODO: dirty hack to make index.edn the home page and not /index/. Remove.
+                ;;TODO: dirty hack to make index.edn files the root pages for their root
+                ;; i.e. /index/ route becomes / or /enemies/index/ becomes /enemies/
                 (str/replace #"index/" ""))
            (keys pages))
-          (map #(fn [req] (layout-page req (edn-layout (read-string %)))) (vals pages))))
+          (map #(fn [req] (layout-page req (edn-layout (read-string %) pages))) (vals pages))))
 
 (defn get-raw-pages
   "Returns a map of {:routes f(raw-file)-> :prepared-page}"
