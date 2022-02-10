@@ -103,5 +103,5 @@
    [:p "Currently this wiki is being worked on, but once we're at MVP you can contribute "
     [:a {:href "https://github.com/SoulSloth/how-to-play-wiki-content"} "to the content wiki."]]
    [:h1 "Who are you?"]
-   [:p "I'm Soul. You can catch my other stuff at my site: " [:a {:href "https://soulreviews.net/"} "soulreviews.net"]]])
-.
+   [:p "I'm Soul. You can catch my other stuff at my site: "
+    [:a {:href "https://soulreviews.net/"} "soulreviews.net"]]])
