@@ -16,7 +16,7 @@
 (defn get-assets
   "Load all assets in public"
   []
-  (assets/load-assets "optimusAssets" [#".*\.(png|css)$"]))
+  (assets/load-assets "optimusAssets" [#".*\.(webp|png|css)$"]))
 
 (defn layout-page
   "Template a body into a basic page"
@@ -34,6 +34,7 @@
     [:nav
      [:ul
       [:a {:href "/weapons"} [:li "Weapons"]]
+      [:a {:href "/classes"} [:li "Classes"]]
       [:a {:href "/locations"} [:li "Locations"]]
       [:a {:href "/enemies"} [:li "Enemies"]]
       [:a {:href "/items"} [:li "Items"]]
@@ -44,6 +45,7 @@
   "Layout an edn file"
   [{category :category :as page} pages]
   (case category
+    :classes (pages/class-page page)
     :about (pages/about-page page)
     :enemies (pages/enemy-page page)
     :weapons (pages/weapon-page page)

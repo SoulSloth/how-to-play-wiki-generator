@@ -27,6 +27,30 @@
       (let [{title :title category :category} (read-string (second page))]
         [:li [:a {:href (str/replace (first page) #"\.edn$" "/")} title]]))]])
 
+(def stat-order
+  ["level" "vitality" "attunement" "endurance" "strength" "dexterity" "resistance" "intelligence" "faith" "humanity"])
+
+(defn character-stat-table
+  "Create a table to display character stats"
+  [page]
+  [:table.crunch
+   [:tr
+    (for [name stat-order]
+      [:th
+       [:img {:src (str "/assets/stats/" name ".webp") :alt name :title name}]])]
+   [:tr
+    (for [stat stat-order]
+      [:td (get page (keyword stat))])]])
+
+(defn class-page
+  "display information about a class"
+  [{:keys [title stats image]}]
+  (html5
+   [:div
+    [:h2 title]
+    [:img {:src (str "/assets/classes/" title ".webp")}]
+    (character-stat-table stats)]))
+
 (defn enemy-page
   "layout an enemy page"
   [{:keys [title category description location drops portrait]}]
