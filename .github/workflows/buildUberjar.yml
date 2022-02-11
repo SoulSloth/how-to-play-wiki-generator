@@ -24,6 +24,6 @@ jobs:
         port: ${{ secrets.port }}
         script: |
           #Pull the wiki contents
-          cd how-to-play-wiki
+          cd how-to-play-wiki-generator
           git stash
           git pull --force origin master
