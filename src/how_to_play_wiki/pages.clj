@@ -2,6 +2,7 @@
   (:require [stasis.core :as stasis]
             [hiccup.page :refer [html5]]
             [clojure.java.io :as io]
+            [optimus.link :as link]
             [markdown.core :as md]
             [clojure.string :as str]))
 
@@ -32,24 +33,24 @@
 
 (defn character-stat-table
   "Create a table to display character stats"
-  [page]
+  [page request]
   [:table.crunch
    [:tr
     (for [name stat-order]
       [:th
-       [:img {:src (str "/assets/stats/" name ".webp") :alt name :title name}]])]
+       [:img {:src (link/file-path request (str "/assets/stats/" name ".webp")) :alt name :title name}]])]
    [:tr
     (for [stat stat-order]
       [:td (get page (keyword stat))])]])
 
 (defn class-page
   "display information about a class"
-  [{:keys [title stats image]}]
+  [{:keys [title stats image]} request]
   (html5
    [:div
     [:h2 title]
-    [:img {:src (str "/assets/classes/" title ".webp")}]
-    (character-stat-table stats)]))
+    [:img {:src (link/file-path request (str "/assets/classes/" title ".webp") )}]
+    (character-stat-table stats request)]))
 
 (defn enemy-page
   "layout an enemy page"

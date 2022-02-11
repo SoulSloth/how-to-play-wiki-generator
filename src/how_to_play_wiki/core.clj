@@ -43,9 +43,9 @@
 
 (defn edn-layout
   "Layout an edn file"
-  [{category :category :as page} pages]
+  [{category :category :as page} pages req]
   (case category
-    :classes (pages/class-page page)
+    :classes (pages/class-page page req)
     :about (pages/about-page page)
     :enemies (pages/enemy-page page)
     :weapons (pages/weapon-page page)
@@ -64,7 +64,7 @@
                 ;; i.e. /index/ route becomes / or /enemies/index/ becomes /enemies/
                 (str/replace #"index/" ""))
            (keys pages))
-          (map #(fn [req] (layout-page req (edn-layout (read-string %) pages))) (vals pages))))
+          (map #(fn [req] (layout-page req (edn-layout (read-string %) pages req))) (vals pages))))
 
 (defn get-raw-pages
   "Returns a map of {:routes f(raw-file)-> :prepared-page}"
