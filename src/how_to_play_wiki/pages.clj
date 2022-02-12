@@ -29,26 +29,42 @@
       (let [{title :title category :category} (read-string (second page))]
         [:li [:a {:href (str/replace (first page) #"\.edn$" "/")} title]]))]])
 
-(defn armor-page
-  [{:keys [image]} request]
-  [:div
-   [:img {:src (link/file-path request (str "/assets/armors/" image))}]
-   ])
-
-(def stat-order
-  ["level" "vitality" "attunement" "endurance" "strength" "dexterity" "resistance" "intelligence" "faith" "humanity"])
-
-(defn character-stat-table
-  "Create a table to display character stats"
-  [page request]
+(defn stat-table
+  "Create a table to display stats"
+  [stats request stat-order asset-dir]
   [:table.crunch
    [:tr
     (for [name stat-order]
       [:th
-       [:img {:src (link/file-path request (str "/assets/stats/" name ".webp")) :alt name :title name}]])]
+       [:img {:src (link/file-path request (str asset-dir name ".webp")) :alt name :title name}]])]
    [:tr
     (for [stat stat-order]
-      [:td (get page (keyword stat))])]])
+      [:td (get stats (keyword stat))])]])
+
+(defn character-stat-table
+  [stats request]
+  (stat-table stats request
+              ["level" "vitality" "attunement" "endurance" "strength" "dexterity" "resistance" "intelligence" "faith" "humanity"]
+              "/assets/stats/character/"))
+
+(defn defense-stat-table
+  [stats request]
+  (stat-table (get stats :defense) request
+              ["physical" "strike" "slash" "thrust" "magic" "fire" "lightning"]
+              "/assets/stats/defense/"))
+
+(defn resistance-stat-table
+  [stats request]
+  (stat-table (get stats :resistance) request
+              ["bleed" "poison" "curse"]
+              "/assets/stats/resistance/"))
+
+(defn armor-stat-table
+  [{:keys [poise durability weight]} request]
+  (stat-table {:poise poise :durability durability :weight weight}
+              request
+              ["poise" "durability" "weight"]
+              "/assets/stats/equipment/"))
 
 (defn class-page
   "display information about a class"
@@ -62,6 +78,14 @@
       ;;Maybe just make resource-dir part of the env?
       [:div.markdown (m/md-to-html-string (slurp (str "site-content/edn/classes/" title ".md")))])
     (character-stat-table stats request)]))
+
+(defn armor-page
+  [{:keys [image stats]} request]
+  [:div
+   [:img {:src (link/file-path request (str "/assets/armors/" image))}]
+   (defense-stat-table stats request)
+   (resistance-stat-table stats request)
+   (armor-stat-table stats request)])
 
 (defn enemy-page
   "layout an enemy page"
