@@ -6,7 +6,8 @@
                  [hiccup "1.0.5"]
                  [markdown-clj "1.10.8"]
                  [enlive "1.1.6"]
-                 [optimus "0.20.2"]]
+                 [optimus "0.20.2"]
+                 [markdown-clj "1.10.8"]]
   :ring {:handler how-to-play-wiki.core/app}
   :aliases {"build-site" ["run" "-m" "how-to-play-wiki.core/export"]}
   :profiles {:dev {:plugins [[lein-ring "0.12.6"]]}

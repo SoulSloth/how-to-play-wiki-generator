@@ -4,7 +4,8 @@
             [clojure.java.io :as io]
             [optimus.link :as link]
             [markdown.core :as md]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [markdown.core :as m]))
 
 (defn home-page
   "Home page"
@@ -28,6 +29,12 @@
       (let [{title :title category :category} (read-string (second page))]
         [:li [:a {:href (str/replace (first page) #"\.edn$" "/")} title]]))]])
 
+(defn armor-page
+  [{:keys [image]} request]
+  [:div
+   [:img {:src (link/file-path request (str "/assets/armors/" image))}]
+   ])
+
 (def stat-order
   ["level" "vitality" "attunement" "endurance" "strength" "dexterity" "resistance" "intelligence" "faith" "humanity"])
 
@@ -45,11 +52,15 @@
 
 (defn class-page
   "display information about a class"
-  [{:keys [title stats image]} request]
+  [{:keys [title stats image md-page]} request]
   (html5
    [:div
     [:h2 title]
-    [:img {:src (link/file-path request (str "/assets/classes/" title ".webp") )}]
+    [:img {:src (link/file-path request (str "/assets/classes/" title ".webp"))}]
+    (if md-page
+      ;;TODO:Disgusting tech debt to support markdown
+      ;;Maybe just make resource-dir part of the env?
+      [:div.markdown (m/md-to-html-string (slurp (str "site-content/edn/classes/" title ".md")))])
     (character-stat-table stats request)]))
 
 (defn enemy-page

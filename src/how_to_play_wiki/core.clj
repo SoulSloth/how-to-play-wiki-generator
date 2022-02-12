@@ -34,6 +34,7 @@
     [:nav
      [:ul
       [:a {:href "/weapons"} [:li "Weapons"]]
+      [:a {:href "/armors"} [:li "Armors"]]
       [:a {:href "/classes"} [:li "Classes"]]
       [:a {:href "/locations"} [:li "Locations"]]
       [:a {:href "/enemies"} [:li "Enemies"]]
@@ -46,6 +47,7 @@
   [{category :category :as page} pages req]
   (case category
     :classes (pages/class-page page req)
+    :armors (pages/armor-page page req)
     :about (pages/about-page page)
     :enemies (pages/enemy-page page)
     :weapons (pages/weapon-page page)
