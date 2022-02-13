@@ -31,12 +31,12 @@
 
 (defn stat-table
   "Create a table to display stats"
-  [stats request stat-order asset-dir]
+  [stats request stat-order]
   [:table.crunch
    [:tr
     (for [name stat-order]
       [:th
-       [:img {:src (link/file-path request (str asset-dir name ".webp")) :alt name :title name}]])]
+       [:img {:src (link/file-path request (str "/assets/stats/" name ".webp")) :alt name :title name}]])]
    [:tr
     (for [stat stat-order]
       [:td (get stats (keyword stat))])]])
@@ -44,27 +44,32 @@
 (defn character-stat-table
   [stats request]
   (stat-table stats request
-              ["level" "vitality" "attunement" "endurance" "strength" "dexterity" "resistance" "intelligence" "faith" "humanity"]
-              "/assets/stats/character/"))
+              ["level" "vitality" "attunement" "endurance" "strength" "dexterity" "resistance" "intelligence" "faith" "humanity"]))
 
 (defn defense-stat-table
   [stats request]
   (stat-table (get stats :defense) request
-              ["physical" "strike" "slash" "thrust" "magic" "fire" "lightning"]
-              "/assets/stats/defense/"))
+              ["physical" "strike" "slash" "thrust" "magic" "fire" "lightning"]))
 
 (defn resistance-stat-table
   [stats request]
   (stat-table (get stats :resistance) request
-              ["bleed" "poison" "curse"]
-              "/assets/stats/resistance/"))
+              ["bleed" "poison" "curse"]))
 
 (defn armor-stat-table
   [{:keys [poise durability weight]} request]
   (stat-table {:poise poise :durability durability :weight weight}
               request
-              ["poise" "durability" "weight"]
-              "/assets/stats/equipment/"))
+              ["poise" "durability" "weight"]))
+
+(defn block-quote
+  "Create a block quote"
+  [blub & author]
+  [:div.markdown
+   [:blockquote
+    [:p blub]
+    (if author
+      [:footer author])]])
 
 (defn class-page
   "display information about a class"
@@ -80,12 +85,33 @@
     (character-stat-table stats request)]))
 
 (defn armor-page
-  [{:keys [image stats]} request]
+  [{:keys [image stats locations upgrades blurb notes]} request]
   [:div
+   (block-quote blurb "In-game description")
    [:img {:src (link/file-path request (str "/assets/armors/" image))}]
    (defense-stat-table stats request)
    (resistance-stat-table stats request)
-   (armor-stat-table stats request)])
+   (armor-stat-table stats request)
+   [:h2 "Locations"]
+   [:ul
+    (for [{:keys [name link]} locations]
+      [:li [:a (if link {:href link}) name]])]
+   [:h2 "Notes"]
+   [:div.markdown (m/md-to-html-string (slurp (str "site-content/edn/armors/" notes)))]
+   [:h2 "Upgrades"]
+   (let
+    [stat-order ["level" "physical" "strike" "slash" "thrust" "magic" "fire" "lightning" "bleed" "poison" "curse"]]
+     [:table
+      [:tr
+       (for [stat stat-order]
+         [:th
+          [:img {:src (link/file-path request (str "/assets/stats/" stat ".webp")) :alt stat :title stat}]])]
+      (for [upgrade upgrades]
+        (let
+         [flat-upgrade-stat (conj (get upgrade :defense) (get upgrade :resistance) (first upgrade))]
+          [:tr
+           (for [stat stat-order]
+             [:td (get flat-upgrade-stat (keyword stat))])]))])])
 
 (defn enemy-page
   "layout an enemy page"
