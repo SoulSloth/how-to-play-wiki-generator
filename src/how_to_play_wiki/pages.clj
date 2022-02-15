@@ -73,16 +73,18 @@
 
 (defn class-page
   "display information about a class"
-  [{:keys [title stats image md-page]} request]
-  (html5
-   [:div
-    [:h2 title]
-    [:img {:src (link/file-path request (str "/assets/classes/" title ".webp"))}]
-    (if md-page
+  [{:keys [title stats image md-page gear]} request]
+  [:div
+   [:h2 title]
+   [:img {:src (link/file-path request (str "/assets/classes/" title ".webp"))}]
+   (character-stat-table stats request)
+   (if md-page
       ;;TODO:Disgusting tech debt to support markdown
       ;;Maybe just make resource-dir part of the env?
-      [:div.markdown (m/md-to-html-string (slurp (str "site-content/edn/classes/" title ".md")))])
-    (character-stat-table stats request)]))
+     [:div.markdown (m/md-to-html-string (slurp (str "site-content/edn/classes/" title ".md")))])
+   [:ul
+    (for [{:keys [name link]} gear]
+      [:li [:a {:href link} name]])]])
 
 (defn armor-page
   [{:keys [image stats locations upgrades blurb notes]} request]
@@ -164,11 +166,36 @@
 
 (defn location-page
   "Location Page"
-  [{:keys [title description enemies]}]
+  [{:keys [title lore POI enemies blurb portrait notes weapons]} request]
   (html5 [:div
+          (block-quote blurb "in-game description")
           [:h1 title]
           [:hr]
-          [:p description]]))
+          [:aside.profile
+           [:h2 title]
+           [:img {:src portrait}]]
+          [:div.markdown (m/md-to-html-string (slurp (str "site-content/edn/locations/" lore)))]
+          [:h1 "Points of Interest"]
+          [:hr]
+          [:div.markdown (m/md-to-html-string (slurp (str "site-content/edn/locations/" POI)))]
+          [:h1 "Weapons"]
+          [:hr]
+          [:ul
+           (for
+            [{:keys [name link methods]} weapons]
+             [:li [:a {:href link} name]
+              [:ul
+               (for [method methods]
+                 [:li method])]])]
+          [:h1 "Enemies"]
+          [:hr]
+          [:ul
+           (for
+            [{:keys [name link]} enemies]
+             [:li [:a {:href link} name]])]
+          [:h1 "Notes"]
+          [:hr]
+          [:div.markdown (m/md-to-html-string (slurp (str "site-content/edn/locations/" notes)))]]))
 
 (defn weapon-page
   "Weapon Page"

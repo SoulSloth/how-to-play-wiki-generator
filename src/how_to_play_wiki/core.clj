@@ -51,7 +51,7 @@
     :about (pages/about-page page)
     :enemies (pages/enemy-page page)
     :weapons (pages/weapon-page page)
-    :locations (pages/location-page page)
+    :locations (pages/location-page page req)
     :items (pages/enemy-page page)
     :home (pages/home-page page)
     :directory (pages/directory-page page pages)))
